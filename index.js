@@ -1,7 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import japan from "./japan.jpg";
 import fragmentShader from "./shaders/fragmentShader.glsl";
 import vertexShader from "./shaders/vertexShader.glsl";
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -15,16 +17,22 @@ controls.update();
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-const geometry = new THREE.SphereGeometry(2, 32, 16);
+const geometry = new THREE.PlaneGeometry(2, 2);
 const material = new THREE.ShaderMaterial({
   vertexShader: vertexShader,
   fragmentShader: fragmentShader,
+  // wireframe: true,
 });
 
-const ico = new THREE.Mesh(geometry, material);
-scene.add(ico);
+material.uniforms.uRadius = { value: 0.2 };
+material.uniforms.uTexture = { value: new THREE.TextureLoader().load(japan) };
 
-camera.position.z = 5;
+const shape = new THREE.Mesh(geometry, material);
+scene.add(shape);
+
+camera.position.z = 2;
+
+renderer.setClearColor("grey", 1);
 
 function render() {
   renderer.render(scene, camera);
